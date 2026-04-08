@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-heading: var(--heading);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-contrast: var(--accent-contrast);
+  --font-display: var(--display-font);
+  --font-sans: var(--body-font);
+  --font-mono: var(--mono-font);
+  --shadow-soft: var(--shadow-soft);
+  --shadow-strong: var(--shadow-strong);
+}
+
+:root {
+  --bg: #f7f1e8;
+  --panel: rgba(252, 248, 241, 0.88);
+  --heading: #261d18;
+  --body: #3c2f28;
+  --muted: #77665d;
+  --accent: #c45d41;
+  --accent-soft: #e9b98f;
+  --accent-contrast: #fffaf5;
+  --shadow-soft:
+    0 20px 50px rgba(86, 54, 28, 0.08),
+    0 6px 16px rgba(86, 54, 28, 0.04);
+  --shadow-strong:
+    0 28px 70px rgba(86, 54, 28, 0.13),
+    0 14px 32px rgba(86, 54, 28, 0.08);
+  --display-font: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --body-font: 'IBM Plex Sans', 'Aptos', 'Segoe UI', sans-serif;
+  --mono-font: 'IBM Plex Mono', 'Cascadia Code', monospace;
+  --page-background:
+    radial-gradient(circle at top left, rgba(201, 92, 58, 0.1), transparent 30%),
+    linear-gradient(180deg, #fbf7ef 0%, #f3eadc 100%);
+  font-family: var(--body-font);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--body);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme='dusk'] {
+  --bg: #1f1916;
+  --panel: rgba(36, 29, 25, 0.88);
+  --heading: #f8ede2;
+  --body: #e4d8ca;
+  --muted: #baa796;
+  --accent: #ef8f65;
+  --accent-soft: #f4c2a1;
+  --accent-contrast: #2b1d16;
+  --shadow-soft:
+    0 20px 50px rgba(0, 0, 0, 0.26),
+    0 6px 16px rgba(0, 0, 0, 0.2);
+  --shadow-strong:
+    0 28px 70px rgba(0, 0, 0, 0.32),
+    0 14px 32px rgba(0, 0, 0, 0.24);
+  --page-background:
+    radial-gradient(circle at top left, rgba(239, 143, 101, 0.16), transparent 26%),
+    linear-gradient(180deg, #261e1b 0%, #171210 100%);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--body-font);
+    color: var(--body);
+    background-color: var(--bg);
+    background-image: var(--page-background);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 0;
+    font-family: var(--display-font);
+    color: var(--heading);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+  }
+
+  h1 {
+    font-size: clamp(3.2rem, 8vw, 6.4rem);
+  }
+
+  h2 {
+    font-size: clamp(2rem, 3vw, 3rem);
+  }
+
+  h3 {
+    font-size: 1.35rem;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  input[type='range'] {
+    accent-color: var(--accent);
+  }
+}
