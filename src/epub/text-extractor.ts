@@ -25,7 +25,7 @@ const SKIP_TAGS = new Set([
 ])
 
 const BLOCK_TYPE_BY_TAG: Record<string, TextBlockType> = {
-  blockquote: 'paragraph',
+  blockquote: 'blockquote',
   div: 'paragraph',
   h1: 'heading',
   h2: 'heading',

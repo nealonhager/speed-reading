@@ -1,4 +1,4 @@
-export type TextBlockType = 'heading' | 'paragraph' | 'listItem'
+export type TextBlockType = 'heading' | 'paragraph' | 'listItem' | 'blockquote'
 
 export interface TextBlock {
   type: TextBlockType
@@ -59,6 +59,8 @@ export interface RsvpToken {
   delayMs: number
   charStart: number
   charEnd: number
+  /** Quoted speech: HTML blockquote and/or “…” in section text. */
+  isDialogue: boolean
   isBreak: boolean
 }
 

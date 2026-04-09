@@ -25,5 +25,41 @@ describe('tokenizeSection', () => {
       '',
     ])
     expect(tokens.at(-1)?.isBreak).toBe(true)
+    expect(tokens.every((t) => !t.isDialogue || t.isBreak)).toBe(true)
+  })
+
+  it('marks tokens inside curly quotes as dialogue', () => {
+    const quoted: SpineSection = {
+      ...section,
+      text: 'He said \u201CHi there\u201D now.',
+    }
+    const tokens = tokenizeSection(quoted, DEFAULT_SETTINGS)
+    const words = tokens.filter((t) => !t.isBreak)
+    const dialogueFlags = words.map((t) => t.isDialogue)
+    expect(dialogueFlags.some(Boolean)).toBe(true)
+    expect(words.find((t) => t.normalizedText === 'Hi')?.isDialogue).toBe(true)
+    const thereToken = words.find((t) => /^there/.test(t.normalizedText))
+    expect(thereToken?.isDialogue).toBe(true)
+    expect(words.find((t) => t.normalizedText === 'now.')?.isDialogue).toBe(false)
+    expect(words[0]?.isDialogue).toBe(false)
+  })
+
+  it('marks tokens inside blockquote blocks as dialogue', () => {
+    const text = 'Before.\n\nQuoted line here.'
+    const bqStart = text.indexOf('Quoted')
+    const withBlocks: SpineSection = {
+      ...section,
+      text,
+      blocks: [
+        { type: 'paragraph', start: 0, end: 7 },
+        { type: 'blockquote', start: bqStart, end: text.length },
+      ],
+    }
+    const tokens = tokenizeSection(withBlocks, DEFAULT_SETTINGS)
+    const quotedTokens = tokens.filter((t) => !t.isBreak && t.normalizedText.startsWith('Quoted'))
+    expect(quotedTokens).toHaveLength(1)
+    expect(quotedTokens[0]!.isDialogue).toBe(true)
+    const beforeTokens = tokens.filter((t) => !t.isBreak && t.normalizedText === 'Before.')
+    expect(beforeTokens[0]!.isDialogue).toBe(false)
   })
 })

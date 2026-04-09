@@ -1,6 +1,6 @@
-import { getOrpIndex } from './orp'
+import { getOrpIndex, getOrpIndexHeuristic } from './orp'
 
-describe('getOrpIndex', () => {
+describe('getOrpIndexHeuristic', () => {
   it.each([
     ['I', 0],
     ['read', 1],
@@ -8,6 +8,13 @@ describe('getOrpIndex', () => {
     ['processing', 3],
     ['hyperconcentration', 4],
   ])('returns the expected ORP index for %s', (token, expected) => {
-    expect(getOrpIndex(token)).toBe(expected)
+    expect(getOrpIndexHeuristic(token)).toBe(expected)
+  })
+})
+
+describe('getOrpIndex', () => {
+  it('matches the length heuristic when canvas measurement is unavailable', () => {
+    expect(getOrpIndex('read', 1)).toBe(getOrpIndexHeuristic('read'))
+    expect(getOrpIndex('processing', 1)).toBe(getOrpIndexHeuristic('processing'))
   })
 })

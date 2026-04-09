@@ -32,9 +32,6 @@ export function ImportScreen({
   return (
     <main className="mx-auto w-[min(1400px,calc(100vw-2rem))] pt-8 pb-20 md:pt-16">
       <section className="mb-10 max-w-[56rem]">
-        <p className="mb-3 text-xs uppercase tracking-[0.24em] text-muted">
-          Browser EPUB RSVP Reader
-        </p>
         <h1 className="max-w-[14ch] text-[clamp(3.2rem,8vw,6.4rem)]">
           Load an EPUB and read one word at a time.
         </h1>

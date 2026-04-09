@@ -11,6 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@chenglou/pretext": "^0.0.5",
     "@zip.js/zip.js": "^2.8.26",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"

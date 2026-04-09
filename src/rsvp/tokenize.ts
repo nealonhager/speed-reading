@@ -1,5 +1,6 @@
 import type { ReaderSettings, RsvpToken, SpineSection } from '../types'
 
+import { curlyQuoteDialogRanges, isDialogueAt } from './dialog-context'
 import { getOrpIndex } from './orp'
 import { getTokenDelay } from './timing'
 
@@ -69,6 +70,7 @@ function mergeSegments(text: string, segments: SegmentLike[]): Array<{ text: str
 
 export function tokenizeSection(section: SpineSection, settings: ReaderSettings): RsvpToken[] {
   const merged = mergeSegments(section.text, segmentText(section.text))
+  const dialogRanges = curlyQuoteDialogRanges(section.text)
   const tokens = merged
     .map((item, index): RsvpToken | null => {
       const normalizedText = item.text.trim()
@@ -83,10 +85,11 @@ export function tokenizeSection(section: SpineSection, settings: ReaderSettings)
         index,
         text: item.text,
         normalizedText,
-        orpIndex: getOrpIndex(normalizedText),
+        orpIndex: getOrpIndex(normalizedText, settings.fontScale),
         delayMs: getTokenDelay(normalizedText, settings),
         charStart: item.start,
         charEnd: item.end,
+        isDialogue: isDialogueAt(item.start, section.blocks, dialogRanges),
         isBreak: false,
       }
     })
@@ -104,6 +107,7 @@ export function tokenizeSection(section: SpineSection, settings: ReaderSettings)
     delayMs: 500,
     charStart: section.text.length,
     charEnd: section.text.length,
+    isDialogue: false,
     isBreak: true,
   })
 

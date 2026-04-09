@@ -320,7 +320,11 @@ export function ReaderScreen({
 
       <section className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.65fr)_minmax(20rem,0.95fr)]">
         <div className="grid gap-5">
-          <RsvpDisplay token={currentToken} fontScale={settings.fontScale} />
+          <RsvpDisplay
+            token={currentToken}
+            fontScale={settings.fontScale}
+            isPlaying={isPlaying}
+          />
           <ReaderControls
             canGoNext={activeSectionIndex < sections.length - 1}
             canGoPrevious={activeSectionIndex > 0}
