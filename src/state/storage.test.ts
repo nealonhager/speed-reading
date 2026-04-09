@@ -19,6 +19,15 @@ describe('storage', () => {
     expect(loadSettings()).toMatchObject({ wpm: 500, theme: 'dusk' })
   })
 
+  it('coerces saved light theme settings back to dusk', () => {
+    window.localStorage.setItem(
+      'speed-reader.settings.v1',
+      JSON.stringify({ ...DEFAULT_SETTINGS, theme: 'light' }),
+    )
+
+    expect(loadSettings()).toMatchObject({ theme: 'dusk' })
+  })
+
   it('saves and loads progress by book id', () => {
     saveProgress({
       bookId: 'book-1',

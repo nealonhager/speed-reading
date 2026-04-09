@@ -68,45 +68,45 @@
 }
 
 :root {
-  --bg: #1f1916;
-  --panel: rgba(36, 29, 25, 0.88);
-  --surface: rgba(48, 39, 35, 0.9);
-  --surface-strong: rgba(60, 49, 43, 0.96);
-  --surface-soft: rgba(28, 22, 19, 0.76);
-  --heading: #f8ede2;
-  --body: #e4d8ca;
-  --muted: #baa796;
-  --accent: #ef8f65;
-  --accent-soft: #f4c2a1;
-  --accent-contrast: #2b1d16;
-  --info: #93aad5;
-  --outline: rgba(248, 237, 226, 0.08);
-  --outline-strong: rgba(248, 237, 226, 0.14);
-  --progress-track: rgba(248, 237, 226, 0.08);
-  --overlay: rgba(12, 9, 8, 0.62);
-  --warning: #f6b6a0;
-  --warning-soft: rgba(201, 92, 58, 0.16);
+  --bg: black;
+  --panel: black;
+  --surface: rgba(18, 24, 35, 0.9);
+  --surface-strong: black;
+  --surface-soft: black;
+  --heading: white;
+  --body: #d8e4f5;
+  --muted: #93a4bd;
+  --accent: #3b82f6;
+  --accent-soft: #7dd3fc;
+  --accent-contrast: #03101f;
+  --info: #93c5fd;
+  --outline: rgba(148, 163, 184, 0.14);
+  --outline-strong: rgba(148, 163, 184, 0.24);
+  --progress-track: rgba(59, 130, 246, 0.16);
+  --overlay: rgba(2, 6, 23, 0.72);
+  --warning: #fda4af;
+  --warning-soft: rgba(244, 63, 94, 0.14);
   --shadow-soft:
-    0 20px 50px rgba(0, 0, 0, 0.26),
-    0 6px 16px rgba(0, 0, 0, 0.2);
+    0 24px 60px rgba(0, 0, 0, 0.38),
+    0 8px 20px rgba(2, 6, 23, 0.26);
   --shadow-strong:
-    0 28px 70px rgba(0, 0, 0, 0.32),
-    0 14px 32px rgba(0, 0, 0, 0.24);
+    0 32px 80px rgba(0, 0, 0, 0.45),
+    0 16px 36px rgba(15, 23, 42, 0.32);
   --display-font: 'Fraunces', 'Iowan Old Style', Georgia, serif;
   --body-font: 'IBM Plex Sans', 'Aptos', 'Segoe UI', sans-serif;
   --mono-font: 'IBM Plex Mono', 'Cascadia Code', monospace;
   --page-background:
-    radial-gradient(circle at top left, rgba(239, 143, 101, 0.16), transparent 26%),
-    linear-gradient(180deg, #261e1b 0%, #171210 100%);
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.2), transparent 28%),
+    linear-gradient(180deg, #0a0f19 0%, #03060b 100%);
   --import-shell-background:
-    linear-gradient(135deg, rgba(239, 143, 101, 0.12), rgba(84, 66, 58, 0.56)),
-    linear-gradient(180deg, rgba(43, 34, 30, 0.98), rgba(26, 21, 18, 0.98));
+    linear-gradient(135deg, rgba(59, 130, 246, 0.16), rgba(15, 23, 42, 0.62)),
+    linear-gradient(180deg, rgba(12, 17, 26, 0.98), rgba(5, 8, 14, 0.98));
   --display-shell-background:
-    radial-gradient(circle at top left, rgba(239, 143, 101, 0.2), transparent 48%),
-    linear-gradient(160deg, rgba(46, 36, 31, 0.96), rgba(25, 20, 18, 0.98));
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.24), transparent 48%),
+    linear-gradient(160deg, rgba(14, 20, 30, 0.96), rgba(5, 8, 14, 0.98));
   --display-shell-dialogue-background:
-    radial-gradient(circle at top left, rgba(147, 170, 213, 0.18), transparent 48%),
-    linear-gradient(160deg, rgba(35, 42, 54, 0.96), rgba(23, 27, 35, 0.98));
+    radial-gradient(circle at top left, rgba(125, 211, 252, 0.2), transparent 48%),
+    linear-gradient(160deg, rgba(17, 25, 38, 0.96), rgba(8, 13, 20, 0.98));
   font-family: var(--body-font);
   line-height: 1.5;
   font-weight: 400;
@@ -147,65 +147,6 @@
   --sidebar-ring: var(--accent-soft);
 }
 
-:root[data-theme='light'] {
-  --bg: #f7f1e8;
-  --panel: rgba(252, 248, 241, 0.88);
-  --surface: rgba(255, 251, 246, 0.8);
-  --surface-strong: rgba(255, 255, 255, 0.9);
-  --surface-soft: rgba(255, 252, 245, 0.78);
-  --heading: #261d18;
-  --body: #3c2f28;
-  --muted: #77665d;
-  --accent: #c45d41;
-  --accent-soft: #e9b98f;
-  --accent-contrast: #fffaf5;
-  --info: #5a76a8;
-  --outline: rgba(49, 38, 33, 0.08);
-  --outline-strong: rgba(49, 38, 33, 0.14);
-  --progress-track: rgba(49, 38, 33, 0.08);
-  --overlay: rgba(38, 29, 24, 0.36);
-  --warning: #923623;
-  --warning-soft: rgba(182, 58, 37, 0.1);
-  --shadow-soft:
-    0 20px 50px rgba(86, 54, 28, 0.08),
-    0 6px 16px rgba(86, 54, 28, 0.04);
-  --shadow-strong:
-    0 28px 70px rgba(86, 54, 28, 0.13),
-    0 14px 32px rgba(86, 54, 28, 0.08);
-  --page-background:
-    radial-gradient(circle at top left, rgba(201, 92, 58, 0.1), transparent 30%),
-    linear-gradient(180deg, #fbf7ef 0%, #f3eadc 100%);
-  --import-shell-background:
-    linear-gradient(135deg, rgba(201, 92, 58, 0.08), rgba(235, 219, 198, 0.38)),
-    linear-gradient(180deg, rgba(255, 252, 245, 0.78), rgba(255, 252, 245, 0.78));
-  --display-shell-background:
-    radial-gradient(circle at top left, rgba(201, 92, 58, 0.14), transparent 48%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(246, 239, 228, 0.96));
-  --display-shell-dialogue-background:
-    radial-gradient(circle at top left, rgba(90, 118, 168, 0.12), transparent 48%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(238, 242, 250, 0.96));
-}
-
-:root[data-theme='dusk'] {
-  --bg: #1f1916;
-  --panel: rgba(36, 29, 25, 0.88);
-  --heading: #f8ede2;
-  --body: #e4d8ca;
-  --muted: #baa796;
-  --accent: #ef8f65;
-  --accent-soft: #f4c2a1;
-  --accent-contrast: #2b1d16;
-  --shadow-soft:
-    0 20px 50px rgba(0, 0, 0, 0.26),
-    0 6px 16px rgba(0, 0, 0, 0.2);
-  --shadow-strong:
-    0 28px 70px rgba(0, 0, 0, 0.32),
-    0 14px 32px rgba(0, 0, 0, 0.24);
-  --page-background:
-    radial-gradient(circle at top left, rgba(239, 143, 101, 0.16), transparent 26%),
-    linear-gradient(180deg, #261e1b 0%, #171210 100%);
-}
-
 @layer base {
   * {
     box-sizing: border-box;
@@ -224,8 +165,6 @@
     font-family: var(--body-font);
     color: var(--body);
     background-color: var(--bg);
-    background-image: var(--page-background);
-    @apply bg-background text-foreground;
   }
 
   button,

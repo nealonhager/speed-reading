@@ -64,7 +64,7 @@ function App() {
 
   useEffect(() => {
     saveSettings(settings)
-    document.documentElement.dataset.theme = settings.theme
+    document.documentElement.dataset.theme = 'dusk'
   }, [settings])
 
   useEffect(() => {
@@ -165,11 +165,9 @@ function App() {
           error={error}
           loading={loading}
           loadingMessage={loadingMessage}
-          onThemeChange={(theme) => setSettings((current) => ({ ...current, theme }))}
           onFileSelected={(file) => {
             void handleFileSelected(file)
           }}
-          theme={settings.theme}
         />
       )}
     </div>

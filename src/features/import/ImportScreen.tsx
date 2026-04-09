@@ -1,26 +1,20 @@
 import { useId, useState } from 'react'
 
-import type { ReaderTheme } from '../../types'
-
 const primaryButtonClass =
-  'inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-accent px-5 text-sm font-semibold text-accent-contrast shadow-[0_12px_32px_rgba(194,95,65,0.24)] transition-[transform,background,color,border-color] duration-200 hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-45 disabled:transform-none'
+  'inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-accent px-5 text-sm font-semibold text-accent-contrast shadow-[0_12px_32px_rgba(59,130,246,0.28)] transition-[transform,background,color,border-color] duration-200 hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-45 disabled:transform-none'
 
 interface ImportScreenProps {
   error?: string
   loading: boolean
   loadingMessage?: string
-  onThemeChange(theme: ReaderTheme): void
   onFileSelected(file: File): void
-  theme: ReaderTheme
 }
 
 export function ImportScreen({
   error,
   loading,
   loadingMessage,
-  onThemeChange,
   onFileSelected,
-  theme,
 }: ImportScreenProps) {
   const inputId = useId()
   const [isDragging, setIsDragging] = useState(false)
@@ -37,7 +31,7 @@ export function ImportScreen({
 
   return (
     <main className="mx-auto w-[min(1400px,calc(100vw-2rem))] pt-8 pb-20 md:pt-16">
-      <section className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+      <section className="mb-10 max-w-[56rem]">
         <div className="max-w-[56rem]">
           <h1 className="max-w-[14ch] text-[clamp(3.2rem,8vw,6.4rem)]">
             Load an EPUB and read one word at a time.
@@ -47,18 +41,6 @@ export function ImportScreen({
             each chapter with adaptive RSVP playback and a live text preview.
           </p>
         </div>
-
-        <label className="grid gap-2 rounded-[1.2rem] border border-outline bg-panel p-4 text-heading shadow-soft">
-          <span className="text-sm text-muted">Theme</span>
-          <select
-            className="min-h-11 rounded-[0.9rem] border border-outline-strong bg-surface px-3.5 text-heading"
-            value={theme}
-            onChange={(event) => onThemeChange(event.currentTarget.value as ReaderTheme)}
-          >
-            <option value="dusk">Dark</option>
-            <option value="light">Light</option>
-          </select>
-        </label>
       </section>
 
       <section

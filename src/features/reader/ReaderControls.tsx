@@ -4,7 +4,7 @@ const ghostButtonClass =
   'inline-flex min-h-11 items-center justify-center rounded-full border border-outline-strong bg-surface px-4 text-heading transition-[transform,background,color,border-color] duration-200 hover:-translate-y-px hover:bg-surface-strong disabled:cursor-not-allowed disabled:opacity-45 disabled:transform-none'
 
 const primaryButtonClass =
-  'inline-flex min-h-12 min-w-28 items-center justify-center rounded-full bg-accent px-5 font-semibold text-accent-contrast shadow-[0_12px_32px_rgba(194,95,65,0.24)] transition-[transform,background,color,border-color] duration-200 hover:-translate-y-px'
+  'inline-flex min-h-12 min-w-28 items-center justify-center rounded-full bg-accent px-5 font-semibold text-accent-contrast shadow-[0_12px_32px_rgba(59,130,246,0.28)] transition-[transform,background,color,border-color] duration-200 hover:-translate-y-px'
 
 const settingCardClass =
   'grid gap-3 rounded-[1.2rem] border border-outline bg-surface p-4 text-heading'
@@ -18,7 +18,6 @@ interface ReaderControlsProps {
   onNextChapter(): void
   onPlayPause(): void
   onPreviousChapter(): void
-  onThemeChange(theme: ReaderSettings['theme']): void
   onWpmChange(value: number): void
   settings: ReaderSettings
 }
@@ -32,7 +31,6 @@ export function ReaderControls({
   onNextChapter,
   onPlayPause,
   onPreviousChapter,
-  onThemeChange,
   onWpmChange,
   settings,
 }: ReaderControlsProps) {
@@ -66,7 +64,7 @@ export function ReaderControls({
         </button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         <label className={settingCardClass}>
           <span className="text-sm text-muted">Words per minute</span>
           <strong className="text-[1.1rem]">{settings.wpm}</strong>
@@ -93,18 +91,6 @@ export function ReaderControls({
             value={settings.fontScale}
             onChange={(event) => onFontScaleChange(Number(event.currentTarget.value))}
           />
-        </label>
-
-        <label className={settingCardClass}>
-          <span className="text-sm text-muted">Theme</span>
-          <select
-            className="min-h-11 rounded-[0.9rem] border border-outline-strong bg-surface px-3.5 text-heading"
-            value={settings.theme}
-            onChange={(event) => onThemeChange(event.currentTarget.value as ReaderSettings['theme'])}
-          >
-            <option value="dusk">Dark</option>
-            <option value="light">Light</option>
-          </select>
         </label>
       </div>
     </section>

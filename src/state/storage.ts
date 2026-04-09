@@ -24,18 +24,28 @@ function safeParse<T>(value: string | null, fallback: T): T {
   }
 }
 
-export function loadSettings(): ReaderSettings {
+/**
+ * Keeps stored settings compatible while forcing the app onto the single supported theme.
+ */
+function normalizeSettings(settings: Partial<ReaderSettings>): ReaderSettings {
   return {
     ...DEFAULT_SETTINGS,
-    ...safeParse<Partial<ReaderSettings>>(
-      window.localStorage.getItem(SETTINGS_STORAGE_KEY),
-      {},
-    ),
+    ...settings,
+    theme: 'dusk',
   }
 }
 
+export function loadSettings(): ReaderSettings {
+  return normalizeSettings(
+    safeParse<Partial<ReaderSettings>>(
+      window.localStorage.getItem(SETTINGS_STORAGE_KEY),
+      {},
+    ),
+  )
+}
+
 export function saveSettings(settings: ReaderSettings): void {
-  window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings))
+  window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(normalizeSettings(settings)))
 }
 
 export function loadProgress(bookId: string): ReaderProgress | null {

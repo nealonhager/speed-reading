@@ -256,58 +256,21 @@ export function ReaderScreen({
       />
       <SidebarRail />
       <SidebarInset className="bg-transparent md:peer-data-[variant=inset]:m-0 md:peer-data-[variant=inset]:rounded-none md:peer-data-[variant=inset]:shadow-none">
-        <div className="mx-auto w-[min(100vw-1rem,80rem)] py-5 lg:w-[min(1400px,calc(100vw-2rem))]">
-          <header className="flex flex-col gap-6 rounded-[1.5rem] border border-outline bg-panel p-4 shadow-soft md:p-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mx-auto flex flex-col gap-5 w-[min(100vw-1rem,80rem)]  lg:w-[min(1400px,calc(100vw-2rem))]">
+          <header className="flex flex-col gap-6 md:p-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="mb-3 text-xs uppercase tracking-[0.24em] text-muted">Loaded EPUB</p>
               <h2>{book.title}</h2>
-              <p className="mt-3 text-muted">{book.author} / {activeSection.label}</p>
+              <p className="mt-3 text-muted">{book.author}</p>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
               <SidebarTrigger className="md:hidden" size="sm" variant="outline">
                 Chapters
               </SidebarTrigger>
-              <button
-                className={ghostButtonClass}
-                type="button"
-                onClick={() => setIsPreviewOpen((current) => !current)}
-              >
-                {isPreviewOpen ? 'Hide preview' : 'Show preview'}
-              </button>
               <button className={ghostButtonClass} type="button" onClick={onCloseBook}>
                 Load another book
               </button>
             </div>
           </header>
-
-          <section className="grid gap-3 rounded-[1.5rem] border border-outline bg-panel p-4 shadow-soft md:grid-cols-4 md:px-6">
-            <div className="grid gap-1">
-              <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">
-                Progress
-              </span>
-              <strong className="text-[1.15rem] text-heading">
-                {Math.max(0, Math.min(100, progressPercent)).toFixed(0)}%
-              </strong>
-            </div>
-            <div className="grid gap-1">
-              <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">
-                Readable sections
-              </span>
-              <strong className="text-[1.15rem] text-heading">{sections.length}</strong>
-            </div>
-            <div className="grid gap-1">
-              <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">
-                Skipped sections
-              </span>
-              <strong className="text-[1.15rem] text-heading">
-                {chapters.filter((chapter) => chapter.warning).length}
-              </strong>
-            </div>
-            <div className="grid gap-1">
-              <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">WPM</span>
-              <strong className="text-[1.15rem] text-heading">{settings.wpm}</strong>
-            </div>
-          </section>
 
           <div
             className="h-2.5 overflow-hidden rounded-full bg-progress-track"
@@ -335,7 +298,6 @@ export function ReaderScreen({
                 onNextChapter={() => goToAdjacentSection(1)}
                 onPlayPause={() => setIsPlaying((current) => !current)}
                 onPreviousChapter={() => goToAdjacentSection(-1)}
-                onThemeChange={(theme) => onSettingsChange({ ...settings, theme })}
                 onWpmChange={(wpm) => onSettingsChange({ ...settings, wpm })}
                 settings={settings}
               />
