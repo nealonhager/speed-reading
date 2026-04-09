@@ -1,33 +1,62 @@
 import type { RsvpToken, SpineSection } from '../../types'
 
 interface PreviewPaneProps {
-  token?: RsvpToken
+  currentTokenIndex: number
+  onSelectToken(tokenIndex: number): void
   section: SpineSection
+  tokens: RsvpToken[]
 }
 
-export function PreviewPane({ token, section }: PreviewPaneProps) {
+export function PreviewPane({
+  currentTokenIndex,
+  onSelectToken,
+  section,
+  tokens,
+}: PreviewPaneProps) {
   const text = section.text
-  const highlightStart = token && !token.isBreak ? token.charStart : -1
-  const highlightEnd = token && !token.isBreak ? token.charEnd : -1
+  const previewTokens = tokens.filter((token) => !token.isBreak)
+  const fragments = previewTokens.reduce<
+    Array<{ leadingText: string; token: RsvpToken; tokenIndex: number }>
+  >((items, token, tokenIndex) => {
+    const previous = items[items.length - 1]
+    const previousEnd = previous ? previous.token.charEnd : 0
+
+    items.push({
+      leadingText: text.slice(previousEnd, token.charStart),
+      token,
+      tokenIndex,
+    })
+
+    return items
+  }, [])
+  const trailingText =
+    previewTokens.length > 0 ? text.slice(previewTokens[previewTokens.length - 1]!.charEnd) : text
 
   return (
-    <section className="rounded-[1.5rem] border border-[rgba(49,38,33,0.1)] bg-panel p-4 shadow-soft md:p-5">
+    <section className="rounded-[1.5rem] border border-outline bg-panel p-4 shadow-soft md:p-5">
       <header className="mb-4 flex items-baseline justify-between gap-4">
         <h3>Preview</h3>
         <p className="text-sm text-muted">{section.label}</p>
       </header>
       <div className="max-h-[70vh] overflow-auto whitespace-pre-wrap text-base leading-[1.8] text-body">
-        {highlightStart >= 0 ? (
-          <>
-            <span>{text.slice(0, highlightStart)}</span>
-            <mark className="rounded-[0.3rem] bg-[rgba(201,92,58,0.16)] px-[0.2rem] py-[0.12rem] text-inherit">
-              {text.slice(highlightStart, highlightEnd)}
-            </mark>
-            <span>{text.slice(highlightEnd)}</span>
-          </>
-        ) : (
-          text
-        )}
+        {fragments.map(({ leadingText, token, tokenIndex }) => {
+          return (
+            <span key={token.id}>
+              {leadingText ? <span>{leadingText}</span> : null}
+              <button
+                aria-current={currentTokenIndex === tokenIndex ? 'true' : undefined}
+                className={`cursor-pointer rounded-[0.3rem] px-[0.2rem] py-[0.12rem] text-inherit transition-colors ${
+                  currentTokenIndex === tokenIndex ? 'bg-accent/16' : 'hover:bg-surface-strong'
+                }`}
+                type="button"
+                onClick={() => onSelectToken(tokenIndex)}
+              >
+                {token.text}
+              </button>
+            </span>
+          )
+        })}
+        {trailingText ? <span>{trailingText}</span> : null}
       </div>
     </section>
   )

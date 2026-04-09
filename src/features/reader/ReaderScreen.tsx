@@ -8,13 +8,19 @@ import type {
   ReaderSettings,
   SpineSection,
 } from '../../types'
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from '../../components/ui/sidebar'
 import { ChapterList } from './ChapterList'
 import { PreviewPane } from './PreviewPane'
 import { ReaderControls } from './ReaderControls'
 import { RsvpDisplay } from './RsvpDisplay'
 
 const ghostButtonClass =
-  'inline-flex min-h-11 items-center justify-center rounded-full border border-[rgba(49,38,33,0.12)] bg-white/65 px-4 text-heading transition-[transform,background,color,border-color] duration-200 hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-45 disabled:transform-none'
+  'inline-flex min-h-11 items-center justify-center rounded-full border border-outline-strong bg-surface px-4 text-heading transition-[transform,background,color,border-color] duration-200 hover:-translate-y-px hover:bg-surface-strong disabled:cursor-not-allowed disabled:opacity-45 disabled:transform-none'
 
 interface ReaderScreenProps {
   book: BookAsset
@@ -51,7 +57,6 @@ export function ReaderScreen({
   )
   const [tokenIndex, setTokenIndex] = useState(initialProgress?.tokenIndex ?? 0)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [completedSectionIds, setCompletedSectionIds] = useState<string[]>(
     initialProgress?.completedSectionIds ?? [],
@@ -243,115 +248,119 @@ export function ReaderScreen({
   }
 
   return (
-    <main className="mx-auto grid w-[min(100vw-1rem,80rem)] gap-5 py-5 lg:w-[min(1400px,calc(100vw-2rem))] lg:pl-[25rem]">
-      <ChapterList
-        activeSectionId={activeSection.id}
-        chapters={chapters}
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        onSelect={(sectionId) => moveToSection(sectionId)}
-      />
-
-      <header className="flex flex-col gap-6 rounded-[1.5rem] border border-[rgba(49,38,33,0.1)] bg-panel p-4 shadow-soft md:p-6 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <p className="mb-3 text-xs uppercase tracking-[0.24em] text-muted">Loaded EPUB</p>
-          <h2>{book.title}</h2>
-          <p className="mt-3 text-muted">{book.author} / {activeSection.label}</p>
-        </div>
-        <div className="flex flex-wrap gap-3 lg:justify-end">
-          <button
-            className={`${ghostButtonClass} lg:hidden`}
-            type="button"
-            onClick={() => setIsDrawerOpen(true)}
-          >
-            Chapters
-          </button>
-          <button
-            className={ghostButtonClass}
-            type="button"
-            onClick={() => setIsPreviewOpen((current) => !current)}
-          >
-            {isPreviewOpen ? 'Hide preview' : 'Show preview'}
-          </button>
-          <button className={ghostButtonClass} type="button" onClick={onCloseBook}>
-            Load another book
-          </button>
-        </div>
-      </header>
-
-      <section className="grid gap-3 rounded-[1.5rem] border border-[rgba(49,38,33,0.1)] bg-panel p-4 shadow-soft md:grid-cols-4 md:px-6">
-        <div className="grid gap-1">
-          <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">
-            Progress
-          </span>
-          <strong className="text-[1.15rem] text-heading">
-            {Math.max(0, Math.min(100, progressPercent)).toFixed(0)}%
-          </strong>
-        </div>
-        <div className="grid gap-1">
-          <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">
-            Readable sections
-          </span>
-          <strong className="text-[1.15rem] text-heading">{sections.length}</strong>
-        </div>
-        <div className="grid gap-1">
-          <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">
-            Skipped sections
-          </span>
-          <strong className="text-[1.15rem] text-heading">
-            {chapters.filter((chapter) => chapter.warning).length}
-          </strong>
-        </div>
-        <div className="grid gap-1">
-          <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">WPM</span>
-          <strong className="text-[1.15rem] text-heading">{settings.wpm}</strong>
-        </div>
-      </section>
-
-      <div
-        className="h-2.5 overflow-hidden rounded-full bg-[rgba(49,38,33,0.08)]"
-        aria-hidden="true"
-      >
-        <div
-          className="h-full rounded-full bg-[linear-gradient(90deg,var(--accent),var(--accent-soft))]"
-          style={{ width: `${progressPercent}%` }}
+    <SidebarProvider>
+      <main className="mx-auto w-[min(100vw-1rem,80rem)] py-5 lg:w-[min(1400px,calc(100vw-2rem))]">
+        <ChapterList
+          activeSectionId={activeSection.id}
+          chapters={chapters}
+          onSelect={(sectionId) => moveToSection(sectionId)}
         />
-      </div>
-
-      <section className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.65fr)_minmax(20rem,0.95fr)]">
-        <div className="grid gap-5">
-          <RsvpDisplay
-            token={currentToken}
-            fontScale={settings.fontScale}
-            isPlaying={isPlaying}
-          />
-          <ReaderControls
-            canGoNext={activeSectionIndex < sections.length - 1}
-            canGoPrevious={activeSectionIndex > 0}
-            isPlaying={isPlaying}
-            onFontScaleChange={(fontScale) => onSettingsChange({ ...settings, fontScale })}
-            onJump={jumpToken}
-            onNextChapter={() => goToAdjacentSection(1)}
-            onPlayPause={() => setIsPlaying((current) => !current)}
-            onPreviousChapter={() => goToAdjacentSection(-1)}
-            onThemeChange={(theme) => onSettingsChange({ ...settings, theme })}
-            onWpmChange={(wpm) => onSettingsChange({ ...settings, wpm })}
-            settings={settings}
-          />
-        </div>
-
-        <div className={`${isPreviewOpen ? 'grid' : 'hidden'} gap-4 md:grid`}>
-          <PreviewPane section={activeSection} token={currentToken} />
-          {readableSectionIds.length > 0 ? (
-            <div className="rounded-[1.25rem] border border-[rgba(49,38,33,0.08)] bg-white/68 px-5 py-4">
-              <p className="mb-1 font-semibold text-heading">Keyboard</p>
-              <span className="text-muted">
-                Space play/pause, arrows jump and adjust WPM, [ ] chapters
-              </span>
+        <SidebarRail />
+        <SidebarInset>
+          <header className="flex flex-col gap-6 rounded-[1.5rem] border border-outline bg-panel p-4 shadow-soft md:p-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="mb-3 text-xs uppercase tracking-[0.24em] text-muted">Loaded EPUB</p>
+              <h2>{book.title}</h2>
+              <p className="mt-3 text-muted">{book.author} / {activeSection.label}</p>
             </div>
-          ) : null}
-        </div>
-      </section>
-    </main>
+            <div className="flex flex-wrap gap-3 lg:justify-end">
+              <SidebarTrigger className={`${ghostButtonClass} lg:hidden`}>Chapters</SidebarTrigger>
+              <button
+                className={ghostButtonClass}
+                type="button"
+                onClick={() => setIsPreviewOpen((current) => !current)}
+              >
+                {isPreviewOpen ? 'Hide preview' : 'Show preview'}
+              </button>
+              <button className={ghostButtonClass} type="button" onClick={onCloseBook}>
+                Load another book
+              </button>
+            </div>
+          </header>
+
+          <section className="grid gap-3 rounded-[1.5rem] border border-outline bg-panel p-4 shadow-soft md:grid-cols-4 md:px-6">
+            <div className="grid gap-1">
+              <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">
+                Progress
+              </span>
+              <strong className="text-[1.15rem] text-heading">
+                {Math.max(0, Math.min(100, progressPercent)).toFixed(0)}%
+              </strong>
+            </div>
+            <div className="grid gap-1">
+              <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">
+                Readable sections
+              </span>
+              <strong className="text-[1.15rem] text-heading">{sections.length}</strong>
+            </div>
+            <div className="grid gap-1">
+              <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">
+                Skipped sections
+              </span>
+              <strong className="text-[1.15rem] text-heading">
+                {chapters.filter((chapter) => chapter.warning).length}
+              </strong>
+            </div>
+            <div className="grid gap-1">
+              <span className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">WPM</span>
+              <strong className="text-[1.15rem] text-heading">{settings.wpm}</strong>
+            </div>
+          </section>
+
+          <div
+            className="h-2.5 overflow-hidden rounded-full bg-progress-track"
+            aria-hidden="true"
+          >
+            <div
+              className="h-full rounded-full bg-[linear-gradient(90deg,var(--accent),var(--accent-soft))]"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+
+          <section className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.65fr)_minmax(20rem,0.95fr)]">
+            <div className="grid gap-5">
+              <RsvpDisplay
+                token={currentToken}
+                fontScale={settings.fontScale}
+                isPlaying={isPlaying}
+              />
+              <ReaderControls
+                canGoNext={activeSectionIndex < sections.length - 1}
+                canGoPrevious={activeSectionIndex > 0}
+                isPlaying={isPlaying}
+                onFontScaleChange={(fontScale) => onSettingsChange({ ...settings, fontScale })}
+                onJump={jumpToken}
+                onNextChapter={() => goToAdjacentSection(1)}
+                onPlayPause={() => setIsPlaying((current) => !current)}
+                onPreviousChapter={() => goToAdjacentSection(-1)}
+                onThemeChange={(theme) => onSettingsChange({ ...settings, theme })}
+                onWpmChange={(wpm) => onSettingsChange({ ...settings, wpm })}
+                settings={settings}
+              />
+            </div>
+
+            <div className={`${isPreviewOpen ? 'grid' : 'hidden'} gap-4 md:grid`}>
+              <PreviewPane
+                currentTokenIndex={safeTokenIndex}
+                onSelectToken={(nextTokenIndex) => {
+                  setIsPlaying(false)
+                  setTokenIndex(nextTokenIndex)
+                }}
+                section={activeSection}
+                tokens={tokens}
+              />
+              {readableSectionIds.length > 0 ? (
+                <div className="rounded-[1.25rem] border border-outline bg-surface px-5 py-4">
+                  <p className="mb-1 font-semibold text-heading">Keyboard</p>
+                  <span className="text-muted">
+                    Space play/pause, arrows jump and adjust WPM, [ ] chapters
+                  </span>
+                </div>
+              ) : null}
+            </div>
+          </section>
+        </SidebarInset>
+      </main>
+    </SidebarProvider>
   )
 }

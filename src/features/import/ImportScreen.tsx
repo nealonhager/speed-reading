@@ -1,5 +1,7 @@
 import { useId, useState } from 'react'
 
+import type { ReaderTheme } from '../../types'
+
 const primaryButtonClass =
   'inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full bg-accent px-5 text-sm font-semibold text-accent-contrast shadow-[0_12px_32px_rgba(194,95,65,0.24)] transition-[transform,background,color,border-color] duration-200 hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-45 disabled:transform-none'
 
@@ -7,14 +9,18 @@ interface ImportScreenProps {
   error?: string
   loading: boolean
   loadingMessage?: string
+  onThemeChange(theme: ReaderTheme): void
   onFileSelected(file: File): void
+  theme: ReaderTheme
 }
 
 export function ImportScreen({
   error,
   loading,
   loadingMessage,
+  onThemeChange,
   onFileSelected,
+  theme,
 }: ImportScreenProps) {
   const inputId = useId()
   const [isDragging, setIsDragging] = useState(false)
@@ -31,21 +37,33 @@ export function ImportScreen({
 
   return (
     <main className="mx-auto w-[min(1400px,calc(100vw-2rem))] pt-8 pb-20 md:pt-16">
-      <section className="mb-10 max-w-[56rem]">
-        <h1 className="max-w-[14ch] text-[clamp(3.2rem,8vw,6.4rem)]">
-          Load an EPUB and read one word at a time.
-        </h1>
-        <p className="mt-5 max-w-[42rem] text-[1.1rem] text-muted">
-          Parse a local EPUB in the browser, strip the noise, then move through
-          each chapter with adaptive RSVP playback and a live text preview.
-        </p>
+      <section className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+        <div className="max-w-[56rem]">
+          <h1 className="max-w-[14ch] text-[clamp(3.2rem,8vw,6.4rem)]">
+            Load an EPUB and read one word at a time.
+          </h1>
+          <p className="mt-5 max-w-[42rem] text-[1.1rem] text-muted">
+            Parse a local EPUB in the browser, strip the noise, then move through
+            each chapter with adaptive RSVP playback and a live text preview.
+          </p>
+        </div>
+
+        <label className="grid gap-2 rounded-[1.2rem] border border-outline bg-panel p-4 text-heading shadow-soft">
+          <span className="text-sm text-muted">Theme</span>
+          <select
+            className="min-h-11 rounded-[0.9rem] border border-outline-strong bg-surface px-3.5 text-heading"
+            value={theme}
+            onChange={(event) => onThemeChange(event.currentTarget.value as ReaderTheme)}
+          >
+            <option value="dusk">Dark</option>
+            <option value="light">Light</option>
+          </select>
+        </label>
       </section>
 
       <section
-        className={`relative rounded-[2rem] border border-[rgba(49,38,33,0.08)] bg-[linear-gradient(135deg,rgba(201,92,58,0.08),rgba(235,219,198,0.38)),rgba(255,252,245,0.78)] p-5 shadow-soft transition-[transform,box-shadow,border-color] duration-200 ${
-          isDragging
-            ? '-translate-y-0.5 border-[rgba(201,92,58,0.55)] shadow-strong'
-            : ''
+        className={`relative rounded-[2rem] border border-outline bg-[image:var(--import-shell-background)] p-5 shadow-soft transition-[transform,box-shadow,border-color] duration-200 ${
+          isDragging ? '-translate-y-0.5 border-accent/55 shadow-strong' : ''
         }`}
         onDragEnter={(event) => {
           event.preventDefault()
@@ -65,7 +83,7 @@ export function ImportScreen({
           handleFiles(event.dataTransfer.files)
         }}
       >
-        <div className="grid justify-items-start gap-4 rounded-[1.5rem] border border-dashed border-[rgba(49,38,33,0.16)] bg-white/78 p-4 md:p-12">
+        <div className="grid justify-items-start gap-4 rounded-[1.5rem] border border-dashed border-outline-strong bg-surface p-4 md:p-12">
           <p className="text-2xl text-heading">Drop an `.epub` here</p>
           <p className="text-muted">
             Reflowable EPUB 2 and EPUB 3 only. Fixed-layout and DRM-protected
@@ -86,15 +104,12 @@ export function ImportScreen({
             Progress and settings are stored locally in this browser.
           </p>
           {loadingMessage ? (
-            <p className="rounded-2xl bg-white/72 px-4 py-3.5 text-muted" role="status">
+            <p className="rounded-2xl bg-surface-soft px-4 py-3.5 text-muted" role="status">
               {loadingMessage}
             </p>
           ) : null}
           {error ? (
-            <p
-              className="rounded-2xl bg-[rgba(182,58,37,0.1)] px-4 py-3.5 text-[#923623]"
-              role="alert"
-            >
+            <p className="rounded-2xl bg-warning-soft px-4 py-3.5 text-warning" role="alert">
               {error}
             </p>
           ) : null}

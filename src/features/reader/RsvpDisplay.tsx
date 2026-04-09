@@ -11,23 +11,23 @@ interface RsvpDisplayProps {
 }
 
 const displayShellBaseClass =
-  'relative min-h-[18rem] overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_top_left,rgba(201,92,58,0.14),transparent_48%),linear-gradient(160deg,rgba(255,255,255,0.95),rgba(246,239,228,0.96))] p-8 shadow-strong transition-[border-color,box-shadow] duration-200 md:min-h-[24rem]'
+  'relative min-h-[18rem] overflow-hidden rounded-[2rem] bg-[image:var(--display-shell-background)] p-8 shadow-strong transition-[border-color,box-shadow] duration-200 md:min-h-[24rem]'
 
 const displayShellDialogueBaseClass =
-  'relative min-h-[18rem] overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_top_left,rgba(90,118,168,0.12),transparent_48%),linear-gradient(160deg,rgba(255,255,255,0.95),rgba(238,242,250,0.96))] p-8 shadow-strong transition-[border-color,box-shadow] duration-200 md:min-h-[24rem]'
+  'relative min-h-[18rem] overflow-hidden rounded-[2rem] bg-[image:var(--display-shell-dialogue-background)] p-8 shadow-strong transition-[border-color,box-shadow] duration-200 md:min-h-[24rem]'
 
-const displayShellPausedClass = `${displayShellBaseClass} border border-[rgba(49,38,33,0.08)]`
-const displayShellPlayingClass = `${displayShellBaseClass} border border-[rgba(201,92,58,0.32)] ring-2 ring-[rgba(201,92,58,0.14)]`
-const displayShellDialoguePausedClass = `${displayShellDialogueBaseClass} border border-[rgba(65,95,140,0.28)]`
-const displayShellDialoguePlayingClass = `${displayShellDialogueBaseClass} border border-[rgba(65,95,140,0.42)] ring-2 ring-[rgba(65,95,140,0.18)]`
+const displayShellPausedClass = `${displayShellBaseClass} border border-outline`
+const displayShellPlayingClass = `${displayShellBaseClass} border border-accent/35 ring-2 ring-accent/15`
+const displayShellDialoguePausedClass = `${displayShellDialogueBaseClass} border border-info/30`
+const displayShellDialoguePlayingClass = `${displayShellDialogueBaseClass} border border-info/45 ring-2 ring-info/20`
 
 const displayFrameBaseClass =
   "relative isolate grid min-h-[20rem] w-full place-items-center before:absolute before:top-1/2 before:left-0 before:h-px before:w-full before:-translate-y-1/2 before:content-[''] after:absolute after:top-0 after:left-1/2 after:h-full after:w-px after:-translate-x-1/2 after:content-[''] transition-colors duration-200"
 
-const displayFramePausedClass = `${displayFrameBaseClass} before:bg-[rgba(49,38,33,0.08)] after:bg-[rgba(49,38,33,0.08)]`
-const displayFramePlayingClass = `${displayFrameBaseClass} before:bg-[rgba(201,92,58,0.24)] after:bg-[rgba(201,92,58,0.24)]`
-const displayFrameDialoguePausedClass = `${displayFrameBaseClass} before:bg-[rgba(65,95,140,0.14)] after:bg-[rgba(65,95,140,0.14)]`
-const displayFrameDialoguePlayingClass = `${displayFrameBaseClass} before:bg-[rgba(65,95,140,0.26)] after:bg-[rgba(65,95,140,0.26)]`
+const displayFramePausedClass = `${displayFrameBaseClass} before:bg-outline after:bg-outline`
+const displayFramePlayingClass = `${displayFrameBaseClass} before:bg-accent/24 after:bg-accent/24`
+const displayFrameDialoguePausedClass = `${displayFrameBaseClass} before:bg-info/18 after:bg-info/18`
+const displayFrameDialoguePlayingClass = `${displayFrameBaseClass} before:bg-info/28 after:bg-info/28`
 
 function displayShellClass(isPlaying: boolean, isDialogue: boolean): string {
   if (isDialogue) {

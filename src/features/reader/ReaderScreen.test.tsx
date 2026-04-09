@@ -78,4 +78,25 @@ describe('ReaderScreen playback', () => {
 
     expect(screen.getByTitle('second')).toBeInTheDocument()
   })
+
+  it('jumps to the clicked preview token', () => {
+    render(
+      <ReaderScreen
+        book={book}
+        chapters={chapters}
+        initialProgress={null}
+        onCloseBook={() => {}}
+        onProgressChange={() => {}}
+        onSettingsChange={() => {}}
+        sectionWarnings={{}}
+        sections={[section]}
+        settings={DEFAULT_SETTINGS}
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show preview' }))
+    fireEvent.click(screen.getByRole('button', { name: 'third.' }))
+
+    expect(screen.getByTitle('third.')).toBeInTheDocument()
+  })
 })

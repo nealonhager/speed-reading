@@ -161,9 +161,11 @@ function App() {
           error={error}
           loading={loading}
           loadingMessage={loadingMessage}
+          onThemeChange={(theme) => setSettings((current) => ({ ...current, theme }))}
           onFileSelected={(file) => {
             void handleFileSelected(file)
           }}
+          theme={settings.theme}
         />
       )}
     </div>

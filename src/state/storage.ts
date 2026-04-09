@@ -6,7 +6,7 @@ export const PROGRESS_STORAGE_KEY = 'speed-reader.progress.v1'
 export const DEFAULT_SETTINGS: ReaderSettings = {
   wpm: 350,
   fontScale: 1,
-  theme: 'light',
+  theme: 'dusk',
   autoPauseOnChapterEnd: true,
   punctuationPause: true,
   longWordPause: true,
