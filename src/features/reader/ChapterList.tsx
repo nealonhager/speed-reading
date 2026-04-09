@@ -1,3 +1,4 @@
+import { Button } from '../../components/ui/button'
 import type { ChapterStatus } from '../../types'
 import {
   Sidebar,
@@ -11,9 +12,6 @@ import {
   useSidebar,
 } from '../../components/ui/sidebar'
 
-const ghostButtonClass =
-  'inline-flex min-h-11 items-center justify-center rounded-full border border-outline-strong bg-surface px-4 text-heading transition-[transform,background,color,border-color] duration-200 hover:-translate-y-px hover:bg-surface-strong disabled:cursor-not-allowed disabled:opacity-45 disabled:transform-none'
-
 interface ChapterListProps {
   activeSectionId: string
   chapters: ChapterStatus[]
@@ -22,35 +20,35 @@ interface ChapterListProps {
 
 export function ChapterList({ activeSectionId, chapters, onSelect }: ChapterListProps) {
   const { isMobile, setOpenMobile } = useSidebar()
+  const readableChapterCount = chapters.filter((chapter) => chapter.available).length
 
   return (
-    <Sidebar id="chapter-sidebar">
-      <SidebarHeader className="mb-4 flex items-baseline justify-between gap-4">
-        <div>
-          <h3>Chapters</h3>
-          <p className="text-sm text-muted">
-            {chapters.filter((chapter) => chapter.available).length} readable sections
-          </p>
+    <Sidebar id="chapter-sidebar" variant="inset">
+      <SidebarHeader className="gap-3 border-b border-sidebar-border px-4 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="text-base">Chapters</h3>
+            <p className="text-sm text-muted-foreground">
+              {readableChapterCount} readable sections
+            </p>
+          </div>
+          {isMobile ? (
+            <Button size="sm" type="button" variant="ghost" onClick={() => setOpenMobile(false)}>
+              Close
+            </Button>
+          ) : null}
         </div>
-        {isMobile ? (
-          <button
-            className={ghostButtonClass}
-            type="button"
-            onClick={() => setOpenMobile(false)}
-          >
-            Close
-          </button>
-        ) : null}
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup className="min-h-0">
-          <SidebarGroupContent className="grid max-h-[calc(100vh-8rem)] gap-3 overflow-auto pr-1">
-            <SidebarMenu className="grid gap-3">
+        <SidebarGroup className="min-h-0 p-2">
+          <SidebarGroupContent className="grid gap-1">
+            <SidebarMenu>
               {chapters.map((chapter) => (
                 <SidebarMenuItem key={chapter.id}>
                   <SidebarMenuButton
                     isActive={chapter.id === activeSectionId}
                     disabled={!chapter.available}
+                    className="h-auto items-start justify-between gap-3 px-3 py-3"
                     onClick={() => {
                       onSelect(chapter.id)
                       setOpenMobile(false)
@@ -58,7 +56,7 @@ export function ChapterList({ activeSectionId, chapters, onSelect }: ChapterList
                   >
                     <span>{chapter.label}</span>
                     {chapter.warning ? (
-                      <span className="rounded-full bg-warning-soft px-2.5 py-1 text-xs text-warning">
+                      <span className="text-xs text-muted-foreground">
                         Skipped
                       </span>
                     ) : null}

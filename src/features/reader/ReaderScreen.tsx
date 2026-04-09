@@ -249,14 +249,14 @@ export function ReaderScreen({
 
   return (
     <SidebarProvider>
-      <main className="mx-auto w-[min(100vw-1rem,80rem)] py-5 lg:w-[min(1400px,calc(100vw-2rem))]">
-        <ChapterList
-          activeSectionId={activeSection.id}
-          chapters={chapters}
-          onSelect={(sectionId) => moveToSection(sectionId)}
-        />
-        <SidebarRail />
-        <SidebarInset>
+      <ChapterList
+        activeSectionId={activeSection.id}
+        chapters={chapters}
+        onSelect={(sectionId) => moveToSection(sectionId)}
+      />
+      <SidebarRail />
+      <SidebarInset className="bg-transparent md:peer-data-[variant=inset]:m-0 md:peer-data-[variant=inset]:rounded-none md:peer-data-[variant=inset]:shadow-none">
+        <div className="mx-auto w-[min(100vw-1rem,80rem)] py-5 lg:w-[min(1400px,calc(100vw-2rem))]">
           <header className="flex flex-col gap-6 rounded-[1.5rem] border border-outline bg-panel p-4 shadow-soft md:p-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="mb-3 text-xs uppercase tracking-[0.24em] text-muted">Loaded EPUB</p>
@@ -264,7 +264,9 @@ export function ReaderScreen({
               <p className="mt-3 text-muted">{book.author} / {activeSection.label}</p>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
-              <SidebarTrigger className={`${ghostButtonClass} lg:hidden`}>Chapters</SidebarTrigger>
+              <SidebarTrigger className="md:hidden" size="sm" variant="outline">
+                Chapters
+              </SidebarTrigger>
               <button
                 className={ghostButtonClass}
                 type="button"
@@ -359,8 +361,8 @@ export function ReaderScreen({
               ) : null}
             </div>
           </section>
-        </SidebarInset>
-      </main>
+        </div>
+      </SidebarInset>
     </SidebarProvider>
   )
 }

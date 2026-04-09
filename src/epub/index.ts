@@ -42,16 +42,20 @@ function filterTocForReader(
 
 export async function loadEpub(file: File): Promise<BookAsset> {
   const archive = await openArchive(file)
+  const hasContainer = archive.has('META-INF/container.xml')
+  const hasEncryption = archive.has('META-INF/encryption.xml')
 
-  if (!archive.has('META-INF/container.xml')) {
+  if (!hasContainer) {
     throw new Error('This file is not a valid EPUB. META-INF/container.xml is missing.')
   }
 
-  if (archive.has('META-INF/encryption.xml')) {
+  if (hasEncryption) {
     throw new Error('Encrypted or DRM-protected EPUBs are not supported in this reader.')
   }
 
-  const opfPath = parseContainerXml(await archive.text('META-INF/container.xml'))
+  const containerXml = await archive.text('META-INF/container.xml')
+
+  const opfPath = parseContainerXml(containerXml)
   const opfDocument = await archive.text(opfPath)
   const parsedPackage = parsePackageDocument(opfDocument, opfPath)
 

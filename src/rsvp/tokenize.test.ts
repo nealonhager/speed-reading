@@ -28,6 +28,38 @@ describe('tokenizeSection', () => {
     expect(tokens.every((t) => !t.isDialogue || t.isBreak)).toBe(true)
   })
 
+  it('does not leave leading or trailing punctuation as standalone tokens', () => {
+    const punctuated: SpineSection = {
+      ...section,
+      text: `"Hello," she said. '(Really.)'`,
+    }
+
+    const tokens = tokenizeSection(punctuated, DEFAULT_SETTINGS)
+
+    expect(tokens.map((token) => token.normalizedText)).toEqual([
+      '"Hello,"',
+      'she',
+      'said.',
+      "'(Really.)'",
+      '',
+    ])
+  })
+
+  it('attaches leading punctuation to the following word', () => {
+    const punctuated: SpineSection = {
+      ...section,
+      text: ',hello .world',
+    }
+
+    const tokens = tokenizeSection(punctuated, DEFAULT_SETTINGS)
+
+    expect(tokens.map((token) => token.normalizedText)).toEqual([
+      ',hello',
+      '.world',
+      '',
+    ])
+  })
+
   it('marks tokens inside curly quotes as dialogue', () => {
     const quoted: SpineSection = {
       ...section,
@@ -37,7 +69,7 @@ describe('tokenizeSection', () => {
     const words = tokens.filter((t) => !t.isBreak)
     const dialogueFlags = words.map((t) => t.isDialogue)
     expect(dialogueFlags.some(Boolean)).toBe(true)
-    expect(words.find((t) => t.normalizedText === 'Hi')?.isDialogue).toBe(true)
+    expect(words.find((t) => /Hi/.test(t.normalizedText))?.isDialogue).toBe(true)
     const thereToken = words.find((t) => /^there/.test(t.normalizedText))
     expect(thereToken?.isDialogue).toBe(true)
     expect(words.find((t) => t.normalizedText === 'now.')?.isDialogue).toBe(false)

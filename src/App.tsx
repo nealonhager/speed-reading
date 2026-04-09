@@ -38,8 +38,8 @@ async function loadReadableSections(book: BookAsset): Promise<{
     try {
       sections.push(await extractSectionText(book, spineItem.id))
     } catch (error) {
-      warnings[spineItem.id] =
-        error instanceof Error ? error.message : 'The section could not be read.'
+      const message = error instanceof Error ? error.message : 'The section could not be read.'
+      warnings[spineItem.id] = message
     }
   }
 
@@ -76,7 +76,9 @@ function App() {
   }, [book])
 
   const handleFileSelected = async (file: File) => {
-    if (!file.name.toLowerCase().endsWith('.epub')) {
+    const passesExtensionCheck = file.name.toLowerCase().endsWith('.epub')
+
+    if (!passesExtensionCheck) {
       setError('Select an `.epub` file to continue.')
       return
     }
@@ -115,7 +117,9 @@ function App() {
         setProgress(nextProgress)
       })
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : 'Failed to load EPUB.')
+      const message = loadError instanceof Error ? loadError.message : 'Failed to load EPUB.'
+
+      setError(message)
     } finally {
       setLoading(false)
       setLoadingMessage(undefined)

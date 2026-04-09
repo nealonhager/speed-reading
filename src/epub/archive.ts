@@ -1,4 +1,4 @@
-import { BlobReader, TextWriter, ZipReader } from '@zip.js/zip.js'
+import { BlobReader, BlobWriter, ZipReader } from '@zip.js/zip.js'
 
 import { normalizePath } from './path'
 
@@ -10,7 +10,7 @@ interface ArchiveFile {
 
 interface ZipEntryLike {
   filename: string
-  getData(writer: TextWriter): Promise<string>
+  getData(writer: BlobWriter): Promise<Blob>
 }
 
 const archiveRegistry = new Map<string, ArchiveFile>()
@@ -37,7 +37,10 @@ export async function openArchive(file: File): Promise<ArchiveFile> {
         throw new Error(`Missing EPUB file: ${normalized}`)
       }
 
-      return entry.getData(new TextWriter())
+      const blob = await entry.getData(new BlobWriter('application/xhtml+xml'))
+      const text = await blob.text()
+
+      return text
     },
     has(path: string) {
       return fileEntries.has(normalizePath(path))
