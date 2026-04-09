@@ -94,7 +94,6 @@ describe('ReaderScreen playback', () => {
       />,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Show preview' }))
     fireEvent.click(screen.getByRole('button', { name: 'third.' }))
 
     expect(screen.getByTitle('third.')).toBeInTheDocument()

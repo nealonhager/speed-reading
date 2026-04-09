@@ -53,7 +53,7 @@ const chapters: ChapterStatus[] = sections.map((section) => ({
 }))
 
 describe('ReaderScreen chapter switching', () => {
-  it('updates the preview when a different chapter is selected', () => {
+  it('switches chapters from the top progress strip without a chapters toggle', () => {
     render(
       <ReaderScreen
         book={book}
@@ -68,14 +68,16 @@ describe('ReaderScreen chapter switching', () => {
       />,
     )
 
+    expect(screen.queryByRole('button', { name: /chapters/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Chapter 1' })).toHaveAttribute('aria-current', 'true')
     expect(screen.getByTitle('First')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: 'Show preview' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Chapter 2' }))
 
+    expect(screen.getByRole('button', { name: 'Chapter 2' })).toHaveAttribute('aria-current', 'true')
     expect(screen.getByTitle('Second')).toBeInTheDocument()
     expect(
-      screen.getByText((_, node) => node?.textContent === 'Second chapter preview text.'),
-    ).toBeInTheDocument()
+      screen.getAllByText((_, node) => node?.textContent === 'Second chapter preview text.'),
+    ).not.toHaveLength(0)
   })
 })

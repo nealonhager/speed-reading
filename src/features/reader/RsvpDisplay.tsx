@@ -74,7 +74,7 @@ export function RsvpDisplay({ token, fontScale, isPlaying }: RsvpDisplayProps) {
     <section className={shellClass} aria-live="polite">
       <div className={frameClass}>
         <span
-          className={`relative z-10 font-display italic leading-none tracking-[-0.05em] ${isPlaying ? 'text-heading' : 'text-heading/82'}`}
+          className={`relative z-10 font-display leading-none tracking-[-0.05em] ${isPlaying ? 'text-heading' : 'text-heading/82'}`}
           style={
             {
               fontSize: `${rsvpDisplayFontSizePx(fontScale)}px`,

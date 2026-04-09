@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import { DEFAULT_SETTINGS } from '../../state/storage'
-import type { BookAsset, ChapterStatus, SpineSection } from '../../types'
+import type { BookAsset, ChapterStatus, ReaderProgress, SpineSection } from '../../types'
 import { ReaderScreen } from './ReaderScreen'
 
 const sections: SpineSection[] = [
@@ -31,7 +31,7 @@ const sections: SpineSection[] = [
 const book: BookAsset = {
   id: 'book-1',
   fileName: 'book.epub',
-  title: 'Sidebar Fixture',
+  title: 'Chapter Strip Fixture',
   author: 'Test Author',
   language: 'en',
   opfPath: 'OPS/content.opf',
@@ -47,62 +47,53 @@ const book: BookAsset = {
   })),
 }
 
-const chapters: ChapterStatus[] = sections.map((section) => ({
-  id: section.id,
-  label: section.label,
-  available: true,
-}))
-
-const originalInnerWidth = window.innerWidth
-const originalMatchMedia = window.matchMedia
-
-function mockMobileViewport(): void {
-  Object.defineProperty(window, 'innerWidth', {
-    configurable: true,
-    value: 640,
-    writable: true,
-  })
-
-  Object.defineProperty(window, 'matchMedia', {
-    configurable: true,
-    value: vi.fn().mockImplementation((query: string) => ({
-      matches: query.includes('max-width'),
-      media: query,
-      onchange: null,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    })),
-    writable: true,
-  })
+function createChapters(availableChapterIds: string[] = sections.map((section) => section.id)): ChapterStatus[] {
+  return sections.map((section) => ({
+    id: section.id,
+    label: section.label,
+    available: availableChapterIds.includes(section.id),
+  }))
 }
 
-describe('ReaderScreen sidebar', () => {
-  beforeEach(() => {
-    mockMobileViewport()
-  })
+function createInitialProgress(overrides: Partial<ReaderProgress> = {}): ReaderProgress {
+  return {
+    bookId: book.id,
+    sectionId: sections[0]!.id,
+    tokenIndex: 0,
+    completedSectionIds: [],
+    updatedAt: '2026-04-08T00:00:00.000Z',
+    ...overrides,
+  }
+}
 
-  afterEach(() => {
-    Object.defineProperty(window, 'innerWidth', {
-      configurable: true,
-      value: originalInnerWidth,
-      writable: true,
-    })
-
-    Object.defineProperty(window, 'matchMedia', {
-      configurable: true,
-      value: originalMatchMedia,
-      writable: true,
-    })
-  })
-
-  it('keeps the chapter list hidden on mobile until opened and closes after selection', () => {
+describe('ReaderScreen chapter progress strip', () => {
+  it('marks the active chapter and exposes its reading progress', () => {
     render(
       <ReaderScreen
         book={book}
-        chapters={chapters}
+        chapters={createChapters()}
+        initialProgress={createInitialProgress({ tokenIndex: 2 })}
+        onCloseBook={() => {}}
+        onProgressChange={() => {}}
+        onSettingsChange={() => {}}
+        sectionWarnings={{}}
+        sections={sections}
+        settings={DEFAULT_SETTINGS}
+      />,
+    )
+
+    expect(screen.getByRole('button', { name: 'Chapter 1' })).toHaveAttribute('aria-current', 'true')
+    expect(screen.getByRole('progressbar', { name: 'Chapter 1 progress' })).toHaveAttribute(
+      'aria-valuenow',
+      '50',
+    )
+  })
+
+  it('disables unreadable chapters and ignores clicks on them', () => {
+    render(
+      <ReaderScreen
+        book={book}
+        chapters={createChapters(['chapter-1'])}
         initialProgress={null}
         onCloseBook={() => {}}
         onProgressChange={() => {}}
@@ -113,13 +104,57 @@ describe('ReaderScreen sidebar', () => {
       />,
     )
 
-    expect(screen.queryByRole('button', { name: 'Chapter 2' })).not.toBeInTheDocument()
+    const disabledChapter = screen.getByRole('button', { name: 'Chapter 2' })
+    expect(disabledChapter).toBeDisabled()
 
-    fireEvent.click(screen.getByRole('button', { name: /chapters/i }))
+    fireEvent.click(disabledChapter)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Chapter 2' }))
+    expect(screen.getByTitle('First')).toBeInTheDocument()
+  })
 
-    expect(screen.queryByRole('button', { name: 'Chapter 2' })).not.toBeInTheDocument()
-    expect(screen.getByTitle('Second')).toBeInTheDocument()
+  it('marks earlier chapters as complete after moving forward', () => {
+    render(
+      <ReaderScreen
+        book={book}
+        chapters={createChapters()}
+        initialProgress={null}
+        onCloseBook={() => {}}
+        onProgressChange={() => {}}
+        onSettingsChange={() => {}}
+        sectionWarnings={{}}
+        sections={sections}
+        settings={DEFAULT_SETTINGS}
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next chapter' }))
+
+    expect(screen.getByRole('button', { name: 'Chapter 2' })).toHaveAttribute('aria-current', 'true')
+    expect(screen.getByRole('progressbar', { name: 'Chapter 1 progress' })).toHaveAttribute(
+      'aria-valuenow',
+      '100',
+    )
+  })
+
+  it('renders chapters before the active chapter as filled on initial load', () => {
+    render(
+      <ReaderScreen
+        book={book}
+        chapters={createChapters()}
+        initialProgress={createInitialProgress({ sectionId: 'chapter-2' })}
+        onCloseBook={() => {}}
+        onProgressChange={() => {}}
+        onSettingsChange={() => {}}
+        sectionWarnings={{}}
+        sections={sections}
+        settings={DEFAULT_SETTINGS}
+      />,
+    )
+
+    expect(screen.getByRole('button', { name: 'Chapter 2' })).toHaveAttribute('aria-current', 'true')
+    expect(screen.getByRole('progressbar', { name: 'Chapter 1 progress' })).toHaveAttribute(
+      'aria-valuenow',
+      '100',
+    )
   })
 })

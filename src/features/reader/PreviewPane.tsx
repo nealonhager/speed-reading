@@ -33,11 +33,8 @@ export function PreviewPane({
     previewTokens.length > 0 ? text.slice(previewTokens[previewTokens.length - 1]!.charEnd) : text
 
   return (
-    <section className="rounded-[1.5rem] border border-outline bg-panel p-4 shadow-soft md:p-5">
-      <header className="mb-4 flex items-baseline justify-between gap-4">
-        <p className="text-sm text-muted">{section.label}</p>
-      </header>
-      <div className="max-h-[70vh] overflow-auto whitespace-pre-wrap text-muted leading-[1.8] text-body  [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <section className="p-4 md:p-5 text-muted">
+      <div className="max-h-[70vh] overflow-auto whitespace-pre-wrap leading-[1.8] text-justify [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {fragments.map(({ leadingText, token, tokenIndex }) => {
           return (
             <span key={token.id}>
