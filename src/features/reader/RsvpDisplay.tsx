@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 
-import { splitAtOrpGrapheme } from '../../rsvp/orp'
+import { getOrpCenterShiftPx, splitAtOrpGrapheme } from '../../rsvp/orp'
 import { rsvpDisplayFontSizePx, rsvpPauseFontSizePx } from '../../rsvp/rsvp-display-font'
 import type { RsvpToken } from '../../types'
 
@@ -68,6 +68,7 @@ export function RsvpDisplay({ token, fontScale, isPlaying }: RsvpDisplayProps) {
   }
 
   const { before, focus, after } = splitAtOrpGrapheme(token.normalizedText, token.orpIndex)
+  const centerShiftPx = getOrpCenterShiftPx(token.normalizedText, fontScale, token.orpIndex)
 
   return (
     <section className={shellClass} aria-live="polite">
@@ -77,6 +78,7 @@ export function RsvpDisplay({ token, fontScale, isPlaying }: RsvpDisplayProps) {
           style={
             {
               fontSize: `${rsvpDisplayFontSizePx(fontScale)}px`,
+              transform: `translateX(${centerShiftPx}px)`,
             } as CSSProperties
           }
           title={token.normalizedText}

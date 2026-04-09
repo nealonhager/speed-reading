@@ -2,6 +2,7 @@ import { prepareWithSegments } from '@chenglou/pretext'
 
 import {
   collectGraphemeWidthsFromPrepared,
+  focusTranslateXFromWidths,
   graphemeIndexToCodeUnitStart,
   orpGraphemeIndexFromWidths,
   splitAtOrpGrapheme,
@@ -49,6 +50,56 @@ export function getOrpIndexHeuristic(text: string): number {
   }
 
   return Math.min(4, length - 1)
+}
+
+function codeUnitStartToGraphemeIndex(text: string, codeUnitStart: number): number {
+  if (codeUnitStart <= 0) {
+    return 0
+  }
+
+  if (typeof Intl === 'undefined' || !('Segmenter' in Intl)) {
+    return Math.min(codeUnitStart, text.length)
+  }
+
+  const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+  let graphemeIndex = 0
+  for (const segment of segmenter.segment(text)) {
+    if (segment.index >= codeUnitStart) {
+      return graphemeIndex
+    }
+    graphemeIndex += 1
+  }
+
+  return graphemeIndex
+}
+
+/**
+ * Pixel offset that aligns the ORP grapheme midpoint with the display centerline.
+ */
+export function getOrpCenterShiftPx(
+  text: string,
+  fontScale: number,
+  orpCodeUnitStart: number,
+): number {
+  if (!text) {
+    return 0
+  }
+
+  const focusGraphemeIndex = codeUnitStartToGraphemeIndex(text, orpCodeUnitStart)
+  const letterSpacingPx = rsvpDisplayLetterSpacingPx(fontScale)
+
+  if (!canUseCanvasMeasureText()) {
+    const graphemeCount = Math.max(1, codeUnitStartToGraphemeIndex(text, text.length))
+    return focusTranslateXFromWidths(new Array<number>(graphemeCount).fill(1), focusGraphemeIndex, letterSpacingPx)
+  }
+
+  try {
+    const prepared = prepareWithSegments(text, rsvpDisplayCanvasFont(fontScale))
+    const widths = collectGraphemeWidthsFromPrepared(prepared)
+    return focusTranslateXFromWidths(widths, focusGraphemeIndex, letterSpacingPx)
+  } catch {
+    return 0
+  }
 }
 
 function getTypographicOrpCodeUnitIndex(text: string, fontScale: number): number | null {

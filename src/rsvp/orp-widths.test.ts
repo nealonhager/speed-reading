@@ -1,4 +1,5 @@
 import {
+  focusTranslateXFromWidths,
   graphemeIndexToCodeUnitStart,
   orpGraphemeIndexFromWidths,
   splitAtOrpGrapheme,
@@ -36,6 +37,20 @@ describe('graphemeIndexToCodeUnitStart', () => {
     const text = 'a😀b'
     expect(graphemeIndexToCodeUnitStart(text, 1)).toBe(1)
     expect(graphemeIndexToCodeUnitStart(text, 2)).toBe(3)
+  })
+})
+
+describe('focusTranslateXFromWidths', () => {
+  it('returns zero when the focus grapheme is already centered', () => {
+    expect(focusTranslateXFromWidths([10, 10, 10, 10, 10], 2, 0)).toBe(0)
+  })
+
+  it('shifts the word right when the focus grapheme sits left of center', () => {
+    expect(focusTranslateXFromWidths([10, 10, 10, 10], 1, 0)).toBe(5)
+  })
+
+  it('shifts the word left when the focus grapheme sits right of center', () => {
+    expect(focusTranslateXFromWidths([5, 5, 5, 40], 3, 0)).toBe(-7.5)
   })
 })
 

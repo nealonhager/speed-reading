@@ -60,6 +60,32 @@ export function orpGraphemeIndexFromWidths(
   return best
 }
 
+/**
+ * Translate the full word so the chosen grapheme midpoint lands on the container centerline.
+ */
+export function focusTranslateXFromWidths(
+  widths: readonly number[],
+  focusGraphemeIndex: number,
+  letterSpacingPx: number,
+): number {
+  const n = widths.length
+  if (n <= 1) {
+    return 0
+  }
+
+  const safeFocusIndex = Math.max(0, Math.min(focusGraphemeIndex, n - 1))
+  const body = widths.reduce((sum, width) => sum + width, 0)
+  const total = body + (n - 1) * letterSpacingPx
+
+  let start = 0
+  for (let i = 0; i < safeFocusIndex; i++) {
+    start += widths[i]! + letterSpacingPx
+  }
+
+  const focusMidpoint = start + widths[safeFocusIndex]! / 2
+  return total / 2 - focusMidpoint
+}
+
 export function graphemeIndexToCodeUnitStart(text: string, graphemeIndex: number): number {
   if (graphemeIndex <= 0) {
     return 0
